@@ -1,0 +1,149 @@
+﻿<Window x:Class="AutoScanFQCTest.DialogWindows.QueryDatabase"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AutoScanFQCTest.DialogWindows"
+		xmlns:wfi="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+        mc:Ignorable="d"
+        Title="查询数据库" Height="800" Width="1100" WindowStartupLocation="CenterScreen">
+
+    <Grid TextElement.FontSize="15" Background="#FFEEEEEE">
+        <Grid.RowDefinitions>
+			<RowDefinition Height="230"/>
+			<RowDefinition Height="1*"/>
+		</Grid.RowDefinitions>
+
+		<Grid Grid.Row="0" Margin="0,25,0,0">
+			<Grid.RowDefinitions>
+                <RowDefinition Height="58*"/>
+                <RowDefinition Height="42*"/>
+			</Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch" Margin="20,0,20,0">
+                <GroupBox Grid.Row="1" Header="查询栏" Foreground="#FF200557" BorderBrush="#FF2022AA" BorderThickness="1.5"
+						HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2,0,0,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="80*" />
+                            <ColumnDefinition Width="20*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" HorizontalAlignment="Stretch" Margin="20,0,20,0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" Margin="20,0,20,0">
+                                <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="起始时间:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <DatePicker Name="datePicker_StartTime" HorizontalAlignment="Left" Height="30" Width="130" Margin="10"/>
+                                        <TextBlock Text="时:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <ComboBox Name="comboBox_StartHour" HorizontalAlignment="Left" Height="25" Width="60" 
+                                                  Style="{StaticResource MyComboBoxStyle}" Margin="10"/>
+                                        <TextBlock Text="分:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <ComboBox Name="comboBox_StartMinute" HorizontalAlignment="Left" Height="25" Width="60" 
+                                                  Style="{StaticResource MyComboBoxStyle}" Margin="10"/>
+                                        <TextBlock Text="秒:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <ComboBox Name="comboBox_StartSecond" HorizontalAlignment="Left" Height="25" Width="60" 
+                                                  Style="{StaticResource MyComboBoxStyle}" Margin="10"/>
+                                        <ComboBox Name="comboBox_All" HorizontalAlignment="Left" Height="25" Width="120" 
+                                            Style="{StaticResource MyComboBoxStyle}" Margin="60,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                            
+                            <Grid Grid.Row="1" Margin="20,0,20,0">
+                                <StackPanel Orientation="Vertical" Margin="0,0,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                        <TextBlock Text="结束时间:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <DatePicker Name="datePicker_EndTime" HorizontalAlignment="Left" Height="30" Width="130" Margin="10"/>
+                                        <TextBlock Text="时:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <ComboBox Name="comboBox_EndHour" HorizontalAlignment="Left" Height="25" Width="60" 
+                                                  Style="{StaticResource MyComboBoxStyle}" Margin="10"/>
+                                        <TextBlock Text="分:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <ComboBox Name="comboBox_EndMinute" HorizontalAlignment="Left" Height="25" Width="60" 
+                                                  Style="{StaticResource MyComboBoxStyle}" Margin="10"/>
+                                        <TextBlock Text="秒:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,5" />
+                                        <ComboBox Name="comboBox_EndSecond" HorizontalAlignment="Left" Height="25" Width="60" 
+                                                  Style="{StaticResource MyComboBoxStyle}" Margin="10"/>
+                                        <Button x:Name="button_ExportCSV" Content="导出CSV" HorizontalAlignment="Left" Width="120" Height="33" 
+                                                Style="{StaticResource CornerButtonStyle}" Margin="60,0,0,0" Click="button_ExportCSV_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+                        </Grid>
+                        
+                        <Grid Grid.Column="1" HorizontalAlignment="Stretch" Margin="20,0,20,0">
+                            <Button x:Name="button_QueryByTime" Content="查询" HorizontalAlignment="Left" Width="100" Height="38" Style="{StaticResource CornerButtonStyle}" 
+							                Margin="0,0,0,0" Click="button_QueryByTime_Click"/>
+                        </Grid>
+                    </Grid>
+                </GroupBox>
+            </Grid>
+
+            <Grid Grid.Row="1" HorizontalAlignment="Stretch" Margin="20,10,20,0">
+                <GroupBox Grid.Row="1" Header="搜索栏" Foreground="#FF200557" BorderBrush="#FF2022AA" BorderThickness="1.5"
+					HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2,0,0,0">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                        <TextBox x:Name="textbox_ProductID" HorizontalAlignment="Stretch" 
+							TextAlignment="Left" IsEnabled="True" TextWrapping="Wrap" IsReadOnly="False" Width="280" Height="30"
+							HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+							InputMethod.IsInputMethodEnabled="False" x:FieldModifier="public" Margin="10,0,0,0"></TextBox>
+                        <Button x:Name="BtnSearchForAllTime" Content="查询 (任何时间)" HorizontalAlignment="Left" Width="150" Height="35" Style="{StaticResource CornerButtonStyle}" 
+							Margin="80,0,0,0" Click="BtnSearchForAllTime_Click"/>
+                        <Button x:Name="BtnSearchForSpecifiedTime" Content="查询 (指定时间段)" HorizontalAlignment="Left" Width="150" Height="35" Style="{StaticResource CornerButtonStyle}" 
+				            Margin="80,0,0,0" Click="BtnSearchForSpecifiedTime_Click"/>
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1" Margin="20,15,20,25">
+            <GroupBox Grid.Row="1" Header="查询结果显示" Foreground="#FF200557" BorderBrush="#FF2022AA" BorderThickness="1.5"
+			        HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="2,0,0,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="45"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Margin="0,0,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="75*" />
+                            <ColumnDefinition Width="25*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0" Margin="0,0,0,0">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+                                <TextBlock Text="总数量:" Height="Auto" VerticalAlignment="Center" Margin="16,5,0,0" />
+                                <TextBox x:Name="textbox_TotalCount" HorizontalAlignment="Stretch" 
+				                    TextAlignment="Right" IsEnabled="True" TextWrapping="Wrap" IsReadOnly="True" Width="50" Height="24"
+				                    HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+				                    InputMethod.IsInputMethodEnabled="False" x:FieldModifier="public" Margin="10,5,0,0"></TextBox>
+                                <TextBlock x:Name="textblock_QueryTime" Text="查询耗时:" Height="Auto" VerticalAlignment="Center" Margin="50,5,0,0" />
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Grid.Column="1" Margin="0,0,0,0">
+                            <Button x:Name="BtnClearResults" Content="清除结果" Width="90" Height="35" Style="{StaticResource CornerButtonStyle}" 
+				                    Margin="0,0,0,0" Click="BtnClearResults_Click"/>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Margin="0,0,0,0">
+                        <wfi:WindowsFormsHost FontSize="16" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="10,10,10,10">
+                            <wf:DataGridView x:Name="gridview_QueryResults" BackgroundColor="#FFFFFFFF"
+						        GridColor="#FFCCCCCC" ReadOnly="True">
+                            </wf:DataGridView>
+                        </wfi:WindowsFormsHost>
+                    </Grid>
+                </Grid>
+            </GroupBox>
+        </Grid>
+		
+	</Grid>
+</Window>

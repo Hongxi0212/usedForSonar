@@ -1,0 +1,1146 @@
+﻿<UserControl x:Class="AutoScanFQCTest.Views.HomeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AutoScanFQCTest.Views"
+			 xmlns:style="clr-namespace:AutoScanFQCTest.Styles"
+			 xmlns:wfi="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+             mc:Ignorable="d">
+
+	<UserControl.Resources>
+		<Color x:Key="ColorRed1" R="228" G="0" B="0" A="255"/>
+		<SolidColorBrush x:Key="RedBrush1" Color="{StaticResource ColorRed1}"/>
+
+		<Color x:Key="ColorRed2" R="255" G="122" B="122" A="255"/>
+		<SolidColorBrush x:Key="RedBrush2" Color="{StaticResource ColorRed2}"/>
+
+		<Color x:Key="EmptySlotColor" R="200" G="200" B="200" A="255"/>
+		<SolidColorBrush x:Key="EmptySlotColorBrush" Color="{StaticResource EmptySlotColor}"/>
+
+		<Color x:Key="UnrecheckableColor" R="128" G="0" B="128" A="255"/>
+		<SolidColorBrush x:Key="UnrecheckableColorBrush" Color="{StaticResource UnrecheckableColor}"/>
+
+		<Style x:Key="UserControl_ImageButtonStyle" TargetType="Button">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border x:Name="border" BorderThickness="1" BorderBrush="Black">
+							<Grid>
+								<Image x:Name="ButtonImage" Source="{Binding (style:AttachedProperties.NormalImage), RelativeSource={RelativeSource TemplatedParent}}"
+							   Stretch="None" Margin="0,0,0,0"/>
+								<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,0"/>
+							</Grid>
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
+								<!--<Setter TargetName="ButtonImage" Property="Source" 
+								Value="{Binding Path=(locals:AttachedProperties.HoverImage), RelativeSource={RelativeSource TemplatedParent}}"/>-->
+								<Setter TargetName="border" Property="BorderBrush" Value="blue"/>
+								<Setter TargetName="border" Property="BorderThickness" Value="2"/>
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<Style x:Key="UserControl_ImageButtonStyleWithoutMouseOver" TargetType="Button">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="Button">
+						<Border x:Name="border" BorderThickness="1">
+							<Grid>
+								<Image x:Name="ButtonImage" Stretch="None"/>
+								<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+							</Grid>
+						</Border>
+						<ControlTemplate.Triggers>
+							<DataTrigger Binding="{Binding (style:AttachedProperties.ImageButtonState), RelativeSource={RelativeSource Self}}" Value="Normal">
+								<Setter TargetName="ButtonImage" Property="Source" 
+								Value="{Binding (style:AttachedProperties.NormalImage), RelativeSource={RelativeSource TemplatedParent}}" />
+							</DataTrigger>
+							<DataTrigger Binding="{Binding (style:AttachedProperties.ImageButtonState), RelativeSource={RelativeSource Self}}" Value="Selected">
+								<Setter TargetName="ButtonImage" Property="Source" 
+								Value="{Binding (style:AttachedProperties.SelectionImage), RelativeSource={RelativeSource TemplatedParent}}" />
+								<Setter TargetName="border" Property="BorderBrush" Value="#FFE800E8"/>
+								<Setter TargetName="border" Property="BorderThickness" Value="2"/>
+							</DataTrigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+
+		<local:TabWidthConverter x:Key="TabWidthConverter" />
+	</UserControl.Resources>
+
+	<Grid Background="#FFE3EDFF">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="26*" />
+			<ColumnDefinition Width="50*" />
+			<ColumnDefinition Width="24*" />
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0" Margin="0,0,0,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="35*" />
+				<RowDefinition Height="27*" />
+				<RowDefinition Height="38*" />
+				<RowDefinition Height="35" />
+				<RowDefinition Height="30" />
+			</Grid.RowDefinitions>
+
+			<!--产品信息-->
+			<Grid Grid.Row="0" VerticalAlignment="Top" x:Name="grid_ProductInfo" TextElement.FontSize="13.5" Margin="2,3,0,0">
+				<TabControl BorderBrush="#FFE3EDFF">
+					<TabControl.Resources>
+						<Style TargetType="{x:Type TabItem}">
+							<Setter Property="Height" Value="28" />
+							<!--<Setter Property="Width" Value="115" />-->
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="{x:Type TabItem}">
+										<Grid Name="Panel">
+											<ContentPresenter x:Name="ContentSite"
+									VerticalAlignment="Center"
+									HorizontalAlignment="Center"
+									ContentSource="Header"
+									Margin="0,0,0,0"/>
+											<Border BorderBrush="Black" BorderThickness="0.5">
+												<!--<ContentPresenter ContentSource="Header" />-->
+											</Border>
+										</Grid>
+										<ControlTemplate.Triggers>
+											<Trigger Property="IsSelected" Value="False">
+												<Setter TargetName="Panel" Property="Background" Value="#FF3A5080"/>
+												<Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="White"/>
+											</Trigger>
+											<Trigger Property="IsMouseOver" Value="True">
+												<Setter TargetName="Panel" Property="Background" Value="#FFB9BDE1"/>
+												<Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black"/>
+											</Trigger>
+											<Trigger Property="IsSelected" Value="True">
+												<Setter TargetName="Panel" Property="Background" Value="#FFF5D085"/>
+												<Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black"/>
+											</Trigger>
+										</ControlTemplate.Triggers>
+									</ControlTemplate>
+
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</TabControl.Resources>
+
+					<TabItem Header="生产数据统计" x:Name="tabitem_ParameterSetting" BorderThickness="0">
+						<Grid Background="#FFB3BDEF" TextElement.FontSize="13" Margin="-1,-2,-1,-1">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="24" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+								<RowDefinition Height="26" />
+							</Grid.RowDefinitions>
+
+							<Grid Grid.Row="0" VerticalAlignment="Stretch" Margin="2,0,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="当前产品类型" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_CurrentProductType" Text="" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="二次OK数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock  x:Name="textblock_TotalConfirmedOKs" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="1" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="总盘数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_TotalPanels" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" x:FieldModifier="public" Margin="10,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<wfi:Grid.ColumnDefinitions>
+										<wfi:ColumnDefinition Width="13*"/>
+										<wfi:ColumnDefinition Width="27*"/>
+									</wfi:Grid.ColumnDefinitions>
+									<TextBlock Text="二次NG数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" wfi:Grid.ColumnSpan="2" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_TotalConfirmedNGs" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="2" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="总产品数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+										<TextBlock Text="0" x:Name="txtblock_ProductCount" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+										<Button x:Name="BtnClearProductCount" Content="清空" HorizontalAlignment="Right" FontSize="13" Width="50" Height="22" Style="{StaticResource CornerButtonStyle}" 
+											Click="BtnClearProductCount_Click"  Margin="36,0,0,0"/>
+									</StackPanel>
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="二次良品率" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_SecondOKRate" Text="NaN" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="3" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="总缺陷点数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_TotalDefects" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="误判率" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_WrongCheckRatio" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="4" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+								
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="一次良率" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_FirstOKRate"  Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="复判OK点数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textblock_RecheckedOKs" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="5" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+                                    <TextBlock  Text="一次OK数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+                                    <TextBlock x:Name="txt_FirstOks" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="复判NG点数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<wfi:Grid.ColumnDefinitions>
+										<wfi:ColumnDefinition Width="17*"/>
+										<wfi:ColumnDefinition Width="103*"/>
+									</wfi:Grid.ColumnDefinitions>
+									<TextBlock x:Name="textblock_RecheckedNGs" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" wfi:Grid.ColumnSpan="2" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="6" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="一次NG数" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="txt_FirstNGs" Text="0" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="Mes返回值卡控:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock Text="1" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="7" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="短日期查询:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<ComboBox x:Name="combo_QueryByShortDate" VerticalAlignment="Center"
+										Style="{StaticResource MyComboBoxStyle}" FontSize="13" Width="Auto" Height="24" Margin="0,0,0,0">
+										<ComboBoxItem IsSelected="True">是</ComboBoxItem>
+										<ComboBoxItem>否</ComboBoxItem>
+									</ComboBox>
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="查询时间:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<ComboBox x:Name="combo_QueryTime" VerticalAlignment="Center"
+										Style="{StaticResource MyComboBoxStyle}" FontSize="13" Width="Auto" Height="24" Margin="0,0,0,0">
+										<ComboBoxItem IsSelected="True">1</ComboBoxItem>
+										<ComboBoxItem>-2</ComboBoxItem>
+									</ComboBox>
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="8" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="开启不可复判项" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+									<ComboBox x:Name="combo_TurnOnNonreevaluableItem" VerticalAlignment="Center"
+										Style="{StaticResource MyComboBoxStyle}" FontSize="13" Width="Auto" Height="24" Margin="0,0,0,0">
+										<ComboBoxItem IsSelected="True">是</ComboBoxItem>
+										<ComboBoxItem>否</ComboBoxItem>
+									</ComboBox>
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF899DD0" Margin="0,0,2,0">
+									<TextBlock Text="设置不可复判项" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF737DA0" Margin="0,0,2,0">
+									<TextBlock x:Name="textBlock_uncheckableItemsCount" Text="-2" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+								</Grid>
+							</Grid>
+
+							<Grid Grid.Row="9" VerticalAlignment="Stretch" Margin="2,2,0,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
+
+								<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="搜索数据耗时:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="1" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="3667" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="2" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="提交数据耗时:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+								<Grid Grid.Column="3" Background="#FF999DD0" Margin="0,0,2,0">
+									<TextBlock Text="1650" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+								</Grid>
+							</Grid>
+						</Grid>
+					</TabItem>
+
+					<TabItem Header="    预留    ">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>
+
+					<!--<TabItem Header="历史记录查询" x:Name="tabitem_HistoryRecordQuery">
+						<TextBlock Text="Content of Tab 2" />
+					</TabItem>
+
+					<TabItem Header="产品信息清零" x:Name="tabitem_ClearProductInfo">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>
+
+					<TabItem Header="良率查询" x:Name="tabitem_QueryYield">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>-->
+
+				</TabControl>
+			</Grid>
+
+			<Grid Grid.Row="1" x:Name="grid_StatisticsBar" VerticalAlignment="Stretch" TextElement.FontSize="12" Margin="2,3,0,0">
+				<TabControl Background="#FFE3EDFF" BorderBrush="#FFE3EDFF">
+					<TabControl.Resources>
+						<Style TargetType="{x:Type TabItem}">
+							<Setter Property="Height" Value="28" />
+							<Setter Property="Width" Value="75" />
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="{x:Type TabItem}">
+										<Grid Name="Panel">
+											<ContentPresenter x:Name="ContentSite"
+												VerticalAlignment="Center"
+												HorizontalAlignment="Center"
+												ContentSource="Header"
+												Margin="2,2,2,2"/>
+											<Border BorderBrush="Black" BorderThickness="0.5">
+												<!--<ContentPresenter ContentSource="Header" />-->
+											</Border>
+										</Grid>
+										<ControlTemplate.Triggers>
+											<Trigger Property="IsSelected" Value="False">
+												<Setter TargetName="Panel" Property="Background" Value="#FF3A5080"/>
+												<Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="White"/>
+											</Trigger>
+											<Trigger Property="IsMouseOver" Value="True">
+												<Setter TargetName="Panel" Property="Background" Value="#FFB9BDE1"/>
+												<Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black"/>
+											</Trigger>
+											<Trigger Property="IsSelected" Value="True">
+												<Setter TargetName="Panel" Property="Background" Value="#FFF5D085"/>
+												<Setter TargetName="ContentSite" Property="TextElement.Foreground" Value="Black"/>
+											</Trigger>
+										</ControlTemplate.Triggers>
+									</ControlTemplate>
+
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</TabControl.Resources>
+
+					<TabItem Header="待复判" x:Name="tabitem_ItemsPendingRecheck" Width="95" BorderThickness="0">
+						<Grid Background="#FFE3EDFF" TextElement.FontSize="13" Margin="0,0,0,0">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="60*" />
+								<ColumnDefinition Width="40*" />
+							</Grid.ColumnDefinitions>
+
+							<Grid Grid.Column="0" Margin="0,0,0,0">
+								<GroupBox Header="待复判产品信息" x:Name="grid_ItemsPendingRecheck" Foreground="#FF200557" BorderBrush="#FF555555" 
+									VerticalAlignment="Stretch" Margin="0,0,2,0">
+
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="15*" />
+											<ColumnDefinition Width="85*" />
+										</Grid.ColumnDefinitions>
+
+										<Grid Grid.Column="0" Margin="0,0,0,0">
+											<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+												<wfi:WindowsFormsHost Grid.Row="1" FontSize="13" Height="166" HorizontalAlignment="Left" Margin="0,0,0,0">
+													<wf:DataGridView x:Name="gridview_RecheckItemNo" BackgroundColor="#FFE3EDFF" SelectionChanged="gridview_RecheckItemNo_SelectionChanged"
+																	 ScrollBars="None" ReadOnly="True" BorderStyle="None" ColumnHeadersVisible="False" AllowUserToAddRows="False">
+													</wf:DataGridView>
+												</wfi:WindowsFormsHost>
+											</StackPanel>
+										</Grid>
+
+										<Grid Grid.Column="1" Margin="0,0,0,0">
+											<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+												<wfi:WindowsFormsHost Grid.Row="1" FontSize="13" Height="166" HorizontalAlignment="Left" Margin="0,0,0,0">
+													<wf:DataGridView x:Name="gridview_RecheckItemBarcode" BackgroundColor="#FFE3EDFF" ScrollBars="Vertical" MultiSelect="False"
+																	 Scroll="gridview_RecheckItemBarcode_Scroll" CellPainting="gridview_RecheckItemBarcode_CellPainting"
+																	 CellClick="gridview_RecheckItemBarcode_CellClick"
+														ReadOnly="True" BorderStyle="None" ColumnHeadersVisible="False" AllowUserToAddRows="False">
+													</wf:DataGridView>
+												</wfi:WindowsFormsHost>
+											</StackPanel>
+										</Grid>
+									</Grid>
+								</GroupBox>
+							</Grid>
+
+							<Grid Grid.Column="1" Margin="0,0,0,0">
+								<GroupBox Header="待确认NG集合" x:Name="grid_DefectsWaitingConfirm" Foreground="#FF200557" BorderBrush="#FF555555"
+									VerticalAlignment="Stretch" Margin="2,0,0,0">
+									<StackPanel Orientation="Horizontal" Margin="10,5,0,0">
+										<wfi:WindowsFormsHost Grid.Row="1" FontSize="13" Height="166" HorizontalAlignment="Left" Margin="0,0,0,0">
+											<wf:DataGridView x:Name="gridview_DefectsWaitingConfirm" BackgroundColor="#FFE3EDFF" ScrollBars="Vertical" MultiSelect="False"
+															 CellPainting="gridview_DefectsWaitingConfirm_CellPainting"
+															 CellClick="gridview_DefectsWaitingConfirm_CellClick"
+												ReadOnly="True" BorderStyle="None" ColumnHeadersVisible="False" AllowUserToAddRows="False">
+											</wf:DataGridView>
+										</wfi:WindowsFormsHost>
+									</StackPanel>
+								</GroupBox>
+							</Grid>
+						</Grid>
+					</TabItem>
+
+					<TabItem Header="预留">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>
+					
+					<TabItem Header="缺陷柱状图" Visibility="Hidden" x:Name="tabitem_DefectBarChart" >
+						<TextBlock Text="Content of Tab 2" />
+					</TabItem>
+
+					<TabItem Header="良率折线图" Visibility="Hidden" x:Name="YieldRateLineChart">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>
+
+					<TabItem Header="班次产量统计" Visibility="Hidden" x:Name="ShiftOutputChart" Width="95">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>
+
+					<TabItem Header="产品导航图" Visibility="Hidden" x:Name="ProductRoadmap">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>
+
+					<!--<TabItem Header="产品信息栏" x:Name="ProductInfo">
+						<TextBlock Text="Content of Tab 3" />
+					</TabItem>-->
+				</TabControl>
+			</Grid>
+
+			<Grid Grid.Row="2" x:Name="grid_NavigationImageCanvas1" Margin="0,0,0,0">
+				<Image x:Name="ctrl_NavigationImageCanvas" Stretch="Fill" 
+					   MouseDown="ctrl_NavigationImageCanvas_MouseDown"
+					   MouseMove="ctrl_NavigationImageCanvas_MouseMove"
+					   MouseUp="ctrl_NavigationImageCanvas_MouseUp"
+					   MouseWheel="ctrl_NavigationImageCanvas_MouseWheel"
+					   x:FieldModifier="public"/>
+			</Grid>
+
+			<Grid Grid.Row="3" Margin="0,0,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="90" />
+					<ColumnDefinition Width="1*" />
+				</Grid.ColumnDefinitions>
+
+				<Grid Grid.Column="0">
+					<TextBlock Text="料盘虚拟ID：" Height="Auto" VerticalAlignment="Center" Margin="16,0,0,0" />
+				</Grid>
+				
+				<Grid Grid.Column="1">
+					<TextBox x:Name="textbox_VirtualSetID" Style="{StaticResource CornerTextBoxStyle2}" FontSize="15"
+						HorizontalAlignment="Stretch"
+						TextAlignment="Left" IsEnabled="True" TextWrapping="Wrap" IsReadOnly="True"
+						HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+						InputMethod.IsInputMethodEnabled="False" x:FieldModifier="public" Margin="0,5,0,4"></TextBox>
+				</Grid>
+			</Grid>
+
+			<Grid Grid.Row="4" Margin="0,0,0,0">
+				<StackPanel x:Name="panel_RotationSelection" Orientation="Horizontal" Margin="0,0,0,0">
+					<TextBlock Text="旋转选项：" Height="Auto" VerticalAlignment="Center" Margin="16,0,0,0" />
+					<ComboBox x:Name="combo_RotationAngle" VerticalAlignment="Center" SelectionChanged="combo_RotationAngle_SelectionChanged"
+						Style="{StaticResource MyComboBoxStyle}" Width="80" Height="24" Margin="13,0,0,0">
+						<ComboBoxItem IsSelected="True">不旋转</ComboBoxItem>
+						<ComboBoxItem>90°</ComboBoxItem>
+						<ComboBoxItem>180°</ComboBoxItem>
+						<ComboBoxItem>270°</ComboBoxItem>
+					</ComboBox>
+				</StackPanel>
+			</Grid>
+		</Grid>
+
+		<Grid Grid.Column="1" Margin="0,0,0,0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="77*" />
+				<RowDefinition Height="23*" />
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Row="0" x:Name="grid_ROIImageCanvas" Margin="0,0,0,0">
+				<Image x:Name="ctrl_ROIImageCanvas1" Stretch="Fill"
+					   MouseDown="ctrl_ROIImageCanvas1_MouseDown"
+					   MouseMove="ctrl_ROIImageCanvas1_MouseMove"
+					   MouseUp="ctrl_ROIImageCanvas1_MouseUp"
+					   MouseWheel="ctrl_ROIImageCanvas1_MouseWheel" x:FieldModifier="public"/>
+			</Grid>
+
+			<Grid Grid.Row="1" Margin="0,0,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*" />
+					<ColumnDefinition Width="1*" />
+				</Grid.ColumnDefinitions>
+
+				<Grid Grid.Column="0">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="45" />
+						<RowDefinition Height="38" />
+						<RowDefinition Height="35" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<Grid Grid.Row="1" Margin="18,3,0,0">
+						<StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+							<CheckBox x:Name="CheckBox_QueryByMachine" FontSize="15" Width="Auto" Height="22" VerticalContentAlignment="Center"
+								  Checked="CheckBox_QueryByMachine_Checked"  Unchecked="CheckBox_QueryByMachine_Unchecked"
+								  IsChecked="False" Content="按机台查询" Margin="0,1,0,0"/>
+							<ComboBox x:Name="combo_SelectMachine" VerticalAlignment="Center" FontSize="15" SelectionChanged="combo_SelectMachine_SelectionChanged"
+								Style="{StaticResource MyComboBoxStyle}" Width="150" Height="28" Margin="10,0,0,0">
+								<ComboBoxItem IsSelected="True">所有机台</ComboBoxItem>
+							</ComboBox>
+							
+							<Grid Grid.Column="1">
+								<Button x:Name="btn_ClearAllRecheckData" Content="清除所有未复判数据" FontSize="15" Width="auto" Height="30" Style="{StaticResource CornerButtonStyle}" Margin="10,2,0,0" 
+									   Visibility ="Visible" Click="BtnClearAllData_Click"/>
+							</Grid>
+						</StackPanel>
+					</Grid>
+
+					<Grid Grid.Row="0" Margin="18,9,10,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="12*" />
+							<ColumnDefinition Width="68*" />
+							<ColumnDefinition Width="20*" />
+						</Grid.ColumnDefinitions>
+
+						<Grid Grid.Column="0">
+							<TextBlock Text="扫码:" Width="Auto" FontSize="15" Height="18" Margin="0,0,0,0" />
+						</Grid>
+
+						<Grid Grid.Column="1">
+							<TextBox x:Name="textbox_ScannedBarcode" Style="{StaticResource CornerTextBoxStyle2}" FontSize="15"
+									HorizontalAlignment="Stretch" TextChanged="textbox_ScannedBarcode_TextChanged"
+									TextAlignment="Left" IsEnabled="True" TextWrapping="Wrap" IsReadOnly="False"
+									HorizontalContentAlignment="Left" VerticalContentAlignment="Center"
+									InputMethod.IsInputMethodEnabled="False" x:FieldModifier="public" Margin="0,1,0,1"></TextBox>
+						</Grid>
+
+						<Grid Grid.Column="2">
+							<Button x:Name="BtnQueryData" Content="查询" FontSize="15" Width="80" Height="30" Style="{StaticResource CornerButtonStyle}" 
+								Click="BtnRequestData_Click"  Margin="8,2,0,0"/>
+						</Grid>
+					</Grid>
+
+					<Grid Grid.Row="2" Margin="18,0,0,0">
+						<StackPanel Orientation="Horizontal" Margin="0,0,0,0">
+							<TextBlock Text="异常信息:" Height="Auto" FontSize="15" VerticalAlignment="Center" Foreground="Red" Visibility="Visible" Margin="6,0,0,0" />
+							<TextBlock Text="未检料盘:" x:Name="textblock_UncheckedTrays" Height="Auto" FontSize="15" VerticalAlignment="Center" Visibility="Hidden" Margin="63,0,0,0" />
+							<ComboBox x:Name="combo_SelectUncheckedTrays" VerticalAlignment="Center" FontSize="15" MouseDown="combo_SelectUncheckedTrays_MouseDown" 
+									  SelectionChanged="combo_SelectUncheckedTrays_SelectionChanged" PreviewMouseDown="combo_SelectUncheckedTrays_PreviewMouseDown"
+									Style="{StaticResource MyComboBoxStyle}" Width="235" Height="26" Visibility="Hidden" Margin="10,0,0,0">
+								<ComboBoxItem IsSelected="True"></ComboBoxItem>
+							</ComboBox>
+						</StackPanel>
+					</Grid>
+
+					<Grid Grid.Row="4" Margin="18,0,18,15">
+						<TextBox x:Name="textbox_ErrorInfo" Style="{StaticResource CornerTextBoxStyle2}" FontSize="15"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Foreground="Red"
+							TextAlignment="Left" IsEnabled="True" TextWrapping="Wrap" IsReadOnly="True"
+							HorizontalContentAlignment="Left" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"
+							InputMethod.IsInputMethodEnabled="False" x:FieldModifier="public" Margin="0,3,0,0"></TextBox>
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Column="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="35" />
+						<RowDefinition Height="*" />
+					</Grid.RowDefinitions>
+
+					<Grid Grid.Row="0" Margin="18,0,0,0">
+						<TextBlock Text="运行信息:" Width="Auto" FontSize="15" Height="18" Margin="0,0,0,0" />
+					</Grid>
+
+					<Grid Grid.Row="1" Margin="18,0,18,15">
+						<TextBox x:Name="textbox_RunningInfo" Style="{StaticResource CornerTextBoxStyle2}" FontSize="15"
+							HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+							TextAlignment="Left" IsEnabled="True" TextWrapping="Wrap" IsReadOnly="True"
+							HorizontalContentAlignment="Left" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"
+							InputMethod.IsInputMethodEnabled="False" x:FieldModifier="public" Margin="0,3,0,0"></TextBox>
+					</Grid>
+				</Grid>
+			</Grid>
+		</Grid>
+
+		<Grid Grid.Column="2" Margin="0,0,0,0">
+			<Grid.RowDefinitions>
+            <RowDefinition Height="19*" />
+            <RowDefinition Height="19*" />
+				<RowDefinition Height="42*" />
+				<RowDefinition Height="20*" />
+			</Grid.RowDefinitions>
+
+			<Grid Grid.Row="0" Background="#FFB3BDEF" TextElement.FontSize="13.5" Margin="-1,-2,-1,-1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="10*" />
+					<RowDefinition Height="10*" />
+					<RowDefinition Height="11*" />
+					<RowDefinition Height="12*" />
+					<RowDefinition Height="11" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="3" Margin="0,10,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Margin="0,0,0,0">
+                  <Button x:Name="BtnConfirmOK" Content="确认为OK" FontSize="17" Width="Auto" Height="39" Background="Green" 
+                                Style="{StaticResource CornerButtonStyle}" Click="BtnConfirmOK_Click"  Margin="0,0,0,0"/>
+					</Grid>
+
+					<Grid Grid.Column="1" Margin="10,0,0,0">
+                  <Button x:Name="BtnConfirmNG" Content="确认为NG" FontSize="17" Width="Auto" Height="39" Background="Red"
+                                Style="{StaticResource CornerButtonStyle}" Click="BtnConfirmNG_Click"  Margin="0,0,0,0">
+                     <Button.ContextMenu>
+                        <ContextMenu x:Name="ContextMenuDefectCorrection"/>
+                     </Button.ContextMenu>
+                  </Button>
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="1" Visibility="Hidden" Margin="0,10,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="1" Margin="10,0,0,0">
+						<Button x:Name="BtnPendingConfirmOK" Content="待确认OK" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+									Click="BtnPendingConfirmOK_Click" Visibility="Hidden" Margin="0,0,0,0"/>
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="2" Margin="0,7,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Margin="0,0,0,0">
+						<Button x:Name="BtnPreviousDefect" Content="上一个缺陷" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+									Click="BtnPreviousDefect_Click"  Margin="0,0,0,0"/>
+					</Grid>
+
+					<Grid Grid.Column="1" Margin="10,0,0,0">
+						<Button x:Name="BtnNextDefect" Content="下一个缺陷" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+									Click="BtnNextDefect_Click"  Margin="0,0,0,0"/>
+					</Grid>
+				</Grid>
+
+				<Grid x:Name="SubmitMesRow" Grid.Row="1" Margin="0,5,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Margin="0,0,0,0">
+						<Button x:Name="BtnRequestData" Content="申请数据" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+								Click="BtnRequestData_Click"  Margin="0,0,0,0"/>
+					</Grid>
+
+					<Grid Grid.Column="1" Margin="10,0,0,0">
+						<Button x:Name="BtnSubmit" Content="提交MES" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+								Click="BtnSubmit_Click"  Margin="0,0,0,0"/>
+					</Grid>
+				</Grid>
+
+				<Grid x:Name="CountBtnRow" Grid.Row="0" Margin="0,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="1*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Margin="0,0,0,0">
+                        <Button x:Name="BtnClearCountButtons" Content="清空统计按钮" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+							Click="BtnClearCountButtons_Click" Margin="0,0,0,0"/>
+						<!--<ComboBox x:Name="combo_1" Visibility="Hidden" VerticalAlignment="Center"
+							Style="{StaticResource MyComboBoxStyle}" FontSize="13" Width="Auto" Height="28" Margin="0,0,0,0">
+							<ComboBoxItem IsSelected="True">ALL</ComboBoxItem>
+							<ComboBoxItem>否</ComboBoxItem>
+						</ComboBox>-->
+					</Grid>
+
+					<Grid Grid.Column="1" Margin="10,0,0,0">
+						<Button x:Name="BtnClearProductButtons" Content="清空产品按钮" FontSize="17" Width="Auto" Height="36" Style="{StaticResource CornerButtonStyle}" 
+							Click="BtnClearProductButtons_Click" Margin="0,0,0,0"/>
+						<!--<ComboBox x:Name="combo_SelectLanguage" Visibility="Hidden" VerticalAlignment="Center"
+							Style="{StaticResource MyComboBoxStyle}" FontSize="13" Width="Auto" Height="28" Margin="0,0,0,0">
+							<ComboBoxItem IsSelected="True">中文</ComboBoxItem>
+							<ComboBoxItem>英文</ComboBoxItem>
+						</ComboBox>-->
+					</Grid>
+				</Grid>
+			</Grid>
+
+         <Grid x:Name="grid_borders_currentPieceInfo" Grid.Row="1" Background="#FFFFFFFF" TextElement.FontSize="15" Margin="0,0,0,0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="1*"/>
+					<ColumnDefinition Width="2*"/>
+				</Grid.ColumnDefinitions>
+
+				<!-- 定义行 -->
+				<Grid.RowDefinitions>
+               <RowDefinition Height="25"/>
+               <RowDefinition Height="25"/>
+               <RowDefinition Height="25"/>
+               <RowDefinition Height="25"/>
+               <RowDefinition Height="25"/>
+               <RowDefinition Height="25"/>
+               <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+				</Grid.RowDefinitions>
+
+				<Border Grid.Column="0" Grid.Row="0" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock Text="正反面" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="0" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock x:Name="textblock_FrontOrBack" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="0" Grid.Row="1" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock Text="二维码" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="1" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock x:Name="textblock_CurrentBarcode" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="0" Grid.Row="2" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock Text="总数量" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="2" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock x:Name="textblock_TotalPieces" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="0" Grid.Row="3" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock Text="缺陷数量" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="3" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock x:Name="textblock_TotalDefectNum" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="0" Grid.Row="4" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock Text="当前序号" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="4" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock x:Name="textblock_CurrentProductIndex" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="0" Grid.Row="5" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock Text="单PCS缺陷" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+				<Border Grid.Column="1" Grid.Row="5" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock x:Name="textblock_NumOfDefectsOfCurrentPiece" Margin="5" VerticalAlignment="Center"/>
+            </Border>
+
+            <Border Grid.Column="0" Grid.Row="6" BorderBrush="Black" BorderThickness="0.5">
+               <TextBlock Text="检测时间" Margin="5" VerticalAlignment="Center"/>
+            </Border>
+
+            <Border Grid.Column="1" Grid.Row="6" BorderBrush="Black" BorderThickness="0.5">
+					<TextBlock x:Name="textblock_InspectDateTime" Margin="5" VerticalAlignment="Center"/>
+				</Border>
+
+                <Border Grid.Column="0" Grid.Row="7" BorderBrush="Black" BorderThickness="0.5">
+                    <TextBlock Text="AI结果" Margin="5" VerticalAlignment="Center"/>
+                </Border>
+
+                <Border Grid.Column="1" Grid.Row="7" BorderBrush="Black" BorderThickness="0.5">
+                    <TextBlock x:Name="textblock_AIResult" Margin="5" VerticalAlignment="Center"/>
+                </Border>
+			</Grid>
+
+         <Grid x:Name="grid_productsOfTray" Grid.Row="2" Background="#FFB3BDEF" TextElement.FontSize="13.5" Margin="-1,-2,-1,-1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="8*" />
+					<RowDefinition Height="77*" />
+					<RowDefinition Height="15*" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0" x:Name="grid_PanelCanvas">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="12*"/>
+						<ColumnDefinition Width="75*"/>
+						<ColumnDefinition Width="12*"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Margin="0,0,0,0">
+						<Image x:Name="ctrl_PanelCanvas" Visibility="Hidden" x:FieldModifier="public"/>
+					</Grid>
+
+					<Grid Grid.Column="0" x:Name="grid_TrayCornerLefttop" Margin="0,0,0,0">
+					</Grid>
+
+					<Grid Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0">
+						<StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+							<TextBlock Text="料盘缺角方向:" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+							<ComboBox x:Name="combo_SpecialTrayCornerMode" VerticalAlignment="Center" SelectionChanged="combo_SpecialTrayCornerMode_SelectionChanged"
+								Style="{StaticResource MyComboBoxStyle}" Width="150" Height="24" Margin="10,0,0,0">
+								<ComboBoxItem IsSelected="True">无</ComboBoxItem>
+								<ComboBoxItem Visibility="Hidden">左上角</ComboBoxItem>
+								<ComboBoxItem>右上角</ComboBoxItem>
+								<ComboBoxItem>左上角（行列倒置）</ComboBoxItem>
+								<ComboBoxItem>左下角</ComboBoxItem>
+                                <ComboBoxItem>右下角</ComboBoxItem>
+							</ComboBox>
+						</StackPanel>
+					</Grid>
+
+					<Grid Grid.Column="2" x:Name="grid_TrayCornerRighttop" Margin="0,0,0,0">
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="1">
+					<ScrollViewer>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="1*" />
+							</Grid.RowDefinitions>
+
+							<Grid Grid.Row="0" x:Name="grid_CircularButtonContainer" HorizontalAlignment="Stretch">
+								<!--<Button x:Name="BtnOK" Content="OK" FontSize="13.5" Style="{StaticResource CircularButtonStyle}" 
+									Click="BtnConfirmOK_Click"  Margin="0,0,0,0"/>-->
+							</Grid>
+						</Grid>
+					</ScrollViewer>
+				</Grid>
+
+				<Grid Grid.Row="2" x:Name="grid_ColorIllustration">
+					<StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="0,5,0,0">
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
+							<TextBlock Text="待判" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="Yellow" Margin="6,0,0,5" />
+							<TextBlock Text="OK" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="MediumSeaGreen" Margin="6,0,0,5" />
+							<TextBlock Text="NG" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="{DynamicResource RedBrush1}" Margin="6,0,0,5" />
+							<TextBlock Text="ET" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="Black" Margin="6,0,0,5" />
+							<TextBlock Text="无码" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="Gray" Margin="6,0,0,5" />
+							<TextBlock Text="未收到" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="{DynamicResource RedBrush2}" Margin="6,0,0,5" />
+						</StackPanel>
+
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Left" Margin="0,5,0,0">
+							<TextBlock Text="空穴" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="{DynamicResource EmptySlotColorBrush}" Margin="6,0,0,5" />
+							<TextBlock Text="定位失败" Height="Auto" Margin="6,0,0,0" />
+                            <TextBlock x:Name="FailedPositioningColor" Text="" Width="35" Height="Auto" Background="#FF800000"  Margin="6,0,0,5" />
+							<TextBlock Text="不可复判" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock x:Name="UnrecheckableColor" Text="" Width="35" Height="Auto" Background="{DynamicResource UnrecheckableColorBrush}" Margin="6,0,0,5" />
+							<TextBlock Text="MES过站NG" Height="Auto" Margin="6,0,0,0" />
+							<TextBlock Text="" Width="35" Height="Auto" Background="DarkOrange" Margin="6,0,0,5" />
+						</StackPanel>
+					</StackPanel>
+				</Grid>
+			</Grid>
+
+			<Grid Grid.Row="3" Background="#FFB3BDEF" TextElement.FontSize="13.5" Margin="-1,-2,-1,-1">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="24" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+					<RowDefinition Height="26" />
+				</Grid.RowDefinitions>
+
+				<Grid Grid.Row="0" VerticalAlignment="Stretch" Visibility="Hidden" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="OK盘手动提交" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<TextBlock Text="暂无数据" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="0" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock x:Name="textblock_TrayBarcodeText" Text="二维码扫码" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<TextBlock x:Name="textblock_TrayBarcode" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="0" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="Mes连接状态" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<TextBlock x:Name="textblock_MesConnectStatus" Height="Auto" Foreground="White" VerticalAlignment="Center" Margin="10,0,0,0" />
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="1" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="是否上传Mes" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<ComboBox x:Name="combo_TurnOnMesUpload" VerticalAlignment="Center"
+							Style="{StaticResource MyComboBoxStyle}" Width="Auto" Height="24" Margin="0,0,0,0">
+							<ComboBoxItem IsSelected="True">是</ComboBoxItem>
+							<ComboBoxItem>否</ComboBoxItem>
+						</ComboBox>
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="2" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="机台编号" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<TextBlock x:Name="textblock_MachineID" Height="Auto" Foreground="White" VerticalAlignment="Center" x:FieldModifier="public" Margin="10,0,0,0" />
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="3" VerticalAlignment="Stretch" Visibility="Hidden" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="产品料号" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<TextBlock x:Name="textblock_ProductID" Height="Auto" Foreground="White" VerticalAlignment="Center" x:FieldModifier="public" Margin="10,0,0,0" />
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="3" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="复判显示模式" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<ComboBox x:Name="combo_RecheckDisplayMode" VerticalAlignment="Center" SelectionChanged="combo_RecheckDisplayMode_SelectionChanged"
+							Style="{StaticResource MyComboBoxStyle}" Width="Auto" Height="24" Margin="0,0,0,0">
+							<ComboBoxItem IsSelected="True">盘检模式</ComboBoxItem>
+                            <ComboBoxItem>单Pcs模式</ComboBoxItem>
+						</ComboBox>
+					</Grid>
+				</Grid>
+
+				<Grid Grid.Row="4" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="工号" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<TextBlock x:Name="textblock_OperatorID" Height="Auto" Foreground="White" VerticalAlignment="Center" x:FieldModifier="public" Margin="10,0,0,0" />
+						<Button x:Name="BtnClearOperatorID" Content="清除工号" HorizontalAlignment="Right" FontSize="13" Width="70" Height="22" Style="{StaticResource CornerButtonStyle}" 
+							Click="BtnClearOperatorID_Click"/>
+					</Grid>
+				</Grid>
+
+                <Grid Grid.Row="5" VerticalAlignment="Stretch" Margin="2,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+                        <TextBlock Text="用戶身份" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+                    </Grid>
+                    <Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+                        <TextBlock x:Name="TextBlock_UserType_Name" Height="Auto" Foreground="White" VerticalAlignment="Center" x:FieldModifier="public" Margin="10,0,0,0" />
+                    </Grid>
+                </Grid>
+
+                <Grid Grid.Row="6" VerticalAlignment="Stretch" Margin="2,0,0,0">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="1*" />
+						<ColumnDefinition Width="3*" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0" Background="#FF999DD0" Margin="0,0,2,0">
+						<TextBlock Text="班次" Height="Auto" VerticalAlignment="Center" Margin="6,0,0,0" />
+					</Grid>
+					<Grid Grid.Column="1" Background="#FF737DA0" Margin="0,0,2,0">
+						<ComboBox x:Name="combo_WorkShift" VerticalAlignment="Center" x:FieldModifier="public"
+							Style="{StaticResource MyComboBoxStyle}" FontSize="13" Width="Auto" Height="24" Margin="0,0,0,0">
+                            <ComboBoxItem IsSelected="True">白班</ComboBoxItem>
+                            <ComboBoxItem>夜班</ComboBoxItem>
+						</ComboBox>
+					</Grid>
+				</Grid>
+
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

@@ -1,0 +1,541 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Style x:Key="SelectableParagraphStyle" TargetType="Paragraph">
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="Padding" Value="0" />
+		<Style.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter Property="Background" Value="LightGray" />
+			</Trigger>
+			<Trigger Property="IsKeyboardFocusWithin" Value="True">
+				<Setter Property="Background" Value="LightBlue" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+	<ControlTemplate x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="1" />
+				<ColumnDefinition Width="20" />
+			</Grid.ColumnDefinitions>
+			<Border x:Name="Border" Grid.ColumnSpan="3" Background="{TemplateBinding Background}" BorderBrush="#FF888888" BorderThickness="1" />
+			<Rectangle Grid.Column="1" Fill="#FFBBBBBB" />
+			<Path x:Name="Arrow" Grid.Column="2" Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center" Data="M 0 0 L 4 4 L 8 0 Z"/>
+		</Grid>
+		<ControlTemplate.Triggers>
+			<Trigger Property="ToggleButton.IsMouseOver" Value="true">
+				<Setter TargetName="Border" Property="Background" Value="#FFF5F5F5" />
+			</Trigger>
+			<Trigger Property="ToggleButton.IsChecked" Value="true">
+				<Setter TargetName="Border" Property="Background" Value="#FFE5E5E5" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+	<ControlTemplate x:Key="ComboBoxTextBox" TargetType="{x:Type TextBox}">
+		<Border x:Name="border" Background="{TemplateBinding Background}">
+			<ScrollViewer x:Name="PART_ContentHost" />
+		</Border>
+	</ControlTemplate>
+
+	<Style x:Key="MyComboBoxStyle" TargetType="{x:Type ComboBox}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ComboBox}">
+					<Grid>
+						<ToggleButton Name="ToggleButton" Template="{StaticResource ComboBoxToggleButton}" Grid.Column="2" Focusable="false" IsChecked="{Binding Path=IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" />
+						<ContentPresenter Name="ContentSite" IsHitTestVisible="False" Content="{TemplateBinding SelectionBoxItem}" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Margin="9,3,23,3" VerticalAlignment="Center" HorizontalAlignment="Left" />
+						<TextBox x:Name="PART_EditableTextBox" Style="{x:Null}" Template="{StaticResource ComboBoxTextBox}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="3,3,23,3" Focusable="True" Background="Transparent" Visibility="Hidden" IsReadOnly="{TemplateBinding IsReadOnly}" />
+						<Popup Name="Popup" Placement="Bottom" IsOpen="{TemplateBinding IsDropDownOpen}" AllowsTransparency="True" Focusable="False" PopupAnimation="Slide" >
+							<Grid Name="DropDown" SnapsToDevicePixels="True" MinWidth="{TemplateBinding ActualWidth}" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+								<Border x:Name="DropDownBorder" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}" BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" />
+								<ScrollViewer Margin="4,6,4,6" SnapsToDevicePixels="True">
+									<StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained" />
+								</ScrollViewer>
+							</Grid>
+						</Popup>
+					</Grid>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="false">
+							<Setter TargetName="ToggleButton" Property="Background" Value="#FFF1F1F1" />
+							<Setter Property="Foreground" Value="#FF8F8F8F"/>
+						</Trigger>
+						<Trigger Property="IsEnabled" Value="true">
+							<Setter TargetName="ToggleButton" Property="Background" Value="#FFFFFFFF" />
+						</Trigger>
+						<Trigger Property="HasDropShadow" SourceName="Popup" Value="true">
+							<Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4"/>
+							<Setter TargetName="DropDownBorder" Property="SnapsToDevicePixels" Value="true"/>
+						</Trigger>
+						<Trigger Property="HasItems" Value="false">
+							<Setter TargetName="DropDownBorder" Property="MinHeight" Value="95"/>
+						</Trigger>
+						<MultiTrigger>
+							<MultiTrigger.Conditions>
+								<Condition Property="IsGrouping" Value="true"/>
+								<Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+							</MultiTrigger.Conditions>
+							<Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+						</MultiTrigger>
+						<Trigger SourceName="Popup" Property="Popup.AllowsTransparency" Value="true">
+							<Setter TargetName="DropDownBorder" Property="CornerRadius" Value="4"/>
+							<Setter TargetName="DropDownBorder" Property="Margin" Value="0,2,0,0"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="CustomExpanderStyle" TargetType="Expander">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Expander">
+					<StackPanel Background="#FFF5FAFF">
+						<ToggleButton x:Name="HeaderButton" DockPanel.Dock="Top" 
+                                      Height="28" VerticalContentAlignment="Center"
+                                      IsChecked="{Binding Path=IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+							<ToggleButton.Template>
+								<ControlTemplate TargetType="{x:Type ToggleButton}">
+									<Border Background="#FFADBCE9" BorderBrush="#FF555555" BorderThickness="1">
+										<ContentPresenter />
+									</Border>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsChecked" Value="True">
+											<Setter Property="Background" Value="Red" />
+										</Trigger>
+									</ControlTemplate.Triggers>
+								</ControlTemplate>
+							</ToggleButton.Template>
+
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*" />
+									<ColumnDefinition Width="20" />
+								</Grid.ColumnDefinitions>
+								<TextBlock Grid.Column="0" Text="{TemplateBinding Header}" FontSize="15"
+										   HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center"/>
+								<TextBlock Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" TextAlignment="Right">
+									<TextBlock.Style>
+										<Style TargetType="TextBlock">
+											<Setter Property="Text" Value="+" />
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding ElementName=HeaderButton, Path=IsChecked}" 
+                                                             Value="True">
+													<Setter Property="Text" Value="-" />
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</TextBlock.Style>
+								</TextBlock>
+							</Grid>
+						</ToggleButton>
+						<ContentPresenter x:Name="PART_Expander" Content="{TemplateBinding Content}" 
+                                          Visibility="Collapsed" />
+					</StackPanel>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsExpanded" Value="True">
+							<Setter TargetName="PART_Expander" Property="Visibility" Value="Visible" />
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="ImageButtonStyle" TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" BorderThickness="1">
+						<Grid>
+							<Image x:Name="ButtonImage" Stretch="None"/>
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter TargetName="ButtonImage" Property="Source" Value="{Binding Path=(local:AttachedProperties.HoverImage), RelativeSource={RelativeSource TemplatedParent}}"/>
+						</Trigger>
+						<DataTrigger Binding="{Binding (local:AttachedProperties.ImageButtonState), RelativeSource={RelativeSource Self}}" Value="Normal">
+							<Setter TargetName="ButtonImage" Property="Source" 
+										Value="e:\Projects\00-SVDTrainingStudio\SVDTrainingStudio\Resources/Arrow.png" />
+						</DataTrigger>
+						<DataTrigger Binding="{Binding (local:AttachedProperties.ImageButtonState), RelativeSource={RelativeSource Self}}" Value="MouseOver">
+							<Setter TargetName="ButtonImage" Property="Source" 
+										Value="{Binding (local:AttachedProperties.SelectionImage), RelativeSource={RelativeSource TemplatedParent}}" />
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="CustomGroupBoxStyle" TargetType="GroupBox">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="GroupBox">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<Border Grid.Row="0" Margin="5,2,5,0" Background="White" HorizontalAlignment="Left">
+							<TextBlock Text="{TemplateBinding Header}" FontWeight="Bold" Margin="5,0"/>
+						</Border>
+						<Border Grid.Row="1" BorderBrush="Red" BorderThickness="2" CornerRadius="4" Margin="0">
+							<ContentPresenter Margin="4"/>
+						</Border>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="CornerTextBoxStyle" TargetType="{x:Type TextBox}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type TextBox}">
+					<Border Name="border" BorderBrush="#3060FF" BorderThickness="1.3" CornerRadius="2.5" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+						<ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsFocused" Value="True">
+							<Setter TargetName="border" Property="BorderBrush" Value="Blue"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="CornerTextBoxStyle2" TargetType="{x:Type TextBox}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type TextBox}">
+					<Border Name="border" BorderBrush="#3060FF" BorderThickness="1.5" CornerRadius="4.5" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+						<ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsFocused" Value="True">
+							<Setter TargetName="border" Property="BorderBrush" Value="Blue"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="CornerButtonStyle" TargetType="Button">
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<!--<GradientStop Color="#FFEBEFFE" Offset="0.0" />
+                    <GradientStop Color="#FFEBEFFE" Offset="0.75" />
+					<GradientStop Color="#FFEBEFFE" Offset="0.0" />-->
+					<!--<GradientStop Color="#FFC0AAF7" Offset="0.0" />
+                    <GradientStop Color="#FFC0AAF7" Offset="0.75" />
+                    <GradientStop Color="#FFC0AAF7" Offset="0.0" />-->
+					<GradientStop Color="#FFFFFFFF" Offset="0.0" />
+					<GradientStop Color="#FFFFFFFF" Offset="0.75" />
+					<GradientStop Color="#FFFFFFFF" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="3" Background="{TemplateBinding Background}" BorderBrush="#FFA080C7" BorderThickness="1.5" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background">
+								<Setter.Value>
+									<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+										<!--<GradientStop Color="#FFBEE6FD" Offset="0.0" />
+                                        <GradientStop Color="#FFBEE6FD" Offset="0.75" />
+										<GradientStop Color="#FFBEE6FD" Offset="0.0" />-->
+										<GradientStop Color="#FFD5D5F5" Offset="0.0" />
+										<GradientStop Color="#FFD5D5F5" Offset="0.75" />
+										<GradientStop Color="#FFD5D5F5" Offset="0.0" />
+									</LinearGradientBrush>
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
+		<Style.Triggers>
+			<Trigger Property="IsEnabled" Value="false">
+				<Setter Property="Background" Value="#FFF1F1F1"/>
+				<Setter Property="Foreground" Value="#FF8F8F8F"/>
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+    <Style x:Key="CircularButtonStyle" TargetType="Button">
+        <Setter Property="Width" Value="33"/>
+        <Setter Property="Height" Value="33"/>
+        <Setter Property="Background" Value="LightBlue"/>
+        <Setter Property="BorderBrush" Value="DarkBlue"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid>
+                        <Ellipse Fill="{TemplateBinding Background}"
+                             Stroke="{TemplateBinding BorderBrush}"
+                             StrokeThickness="{TemplateBinding BorderThickness}"/>
+                        <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="SkyBlue"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background" Value="DeepSkyBlue"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="Gainsboro"/>
+                            <Setter Property="BorderBrush" Value="Gray"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="NormalNavigateButtonStyle" TargetType="Button">
+		<!--<Setter Property="FontFamily" Value="Arial"/>-->
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FF9999BF" Offset="0.9" />
+					<GradientStop Color="#FFC8C8F5" Offset="0.55" />
+					<GradientStop Color="#FFD8D8FF" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="1" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background">
+								<Setter.Value>
+									<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+										<GradientStop Color="#FFC0C0DF" Offset="0.0" />
+										<GradientStop Color="#FFE8E8FA" Offset="0.75" />
+										<GradientStop Color="#FFF8F8FF" Offset="0.0" />
+									</LinearGradientBrush>
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+						<!--<Trigger Property="IsPressed" Value="True">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                    <GradientStop Color="#FFC0C0DF" Offset="0.0" />
+                                    <GradientStop Color="#FFE8E8FA" Offset="0.8" />
+                                    <GradientStop Color="#FFF8F8FF" Offset="0.0" />
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                    </Trigger>-->
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="PressedNormalNavigateButtonStyle" TargetType="Button">
+		<Setter Property="Width" Value="90"/>
+		<Setter Property="Height" Value="42"/>
+		<Setter Property="Foreground" Value="#FEBB55"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FF211140" Offset="0.9" />
+					<GradientStop Color="#FF311860" Offset="0.55" />
+					<GradientStop Color="#FF412080" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="CornerNavigateButtonStyle" TargetType="Button">
+		<!--<Setter Property="FontFamily" Value="Arial"/>-->
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FF9999BF" Offset="0.9" />
+					<GradientStop Color="#FFC8C8F5" Offset="0.55" />
+					<GradientStop Color="#FFD8D8FF" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background">
+								<Setter.Value>
+									<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+										<GradientStop Color="#FFC0C0DF" Offset="0.0" />
+										<GradientStop Color="#FFE8E8FA" Offset="0.75" />
+										<GradientStop Color="#FFF8F8FF" Offset="0.0" />
+									</LinearGradientBrush>
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+						<!--<Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                        <GradientStop Color="#FFC0C0DF" Offset="0.0" />
+                                        <GradientStop Color="#FFE8E8FA" Offset="0.8" />
+                                        <GradientStop Color="#FFF8F8FF" Offset="0.0" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>-->
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="PressedCornerNavigateButtonStyle" TargetType="Button">
+		<Setter Property="Width" Value="90"/>
+		<Setter Property="Height" Value="42"/>
+		<Setter Property="Foreground" Value="#FEBB55"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FF211140" Offset="0.9" />
+					<GradientStop Color="#FF311860" Offset="0.55" />
+					<GradientStop Color="#FF412080" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="8" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="NormalLinearGradientButtonStyle" TargetType="Button">
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FFD0D0D0" Offset="0.9" />
+					<GradientStop Color="#FFEEEEFE" Offset="0.55" />
+					<GradientStop Color="#FFFFFFFF" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Setter Property="Background">
+								<Setter.Value>
+									<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+										<GradientStop Color="#FFE0E0E0" Offset="0.0" />
+										<GradientStop Color="#FFF6F6F6" Offset="0.75" />
+										<GradientStop Color="#FFFFFFFF" Offset="0.0" />
+									</LinearGradientBrush>
+								</Setter.Value>
+							</Setter>
+						</Trigger>
+						<!--<Trigger Property="IsPressed" Value="True">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                        <GradientStop Color="#FFC0C0DF" Offset="0.0" />
+                                        <GradientStop Color="#FFE8E8FA" Offset="0.8" />
+                                        <GradientStop Color="#FFF8F8FF" Offset="0.0" />
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                        </Trigger>-->
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="PressedLinearGradientButtonStyle" TargetType="Button">
+		<Setter Property="Width" Value="90"/>
+		<Setter Property="Height" Value="42"/>
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="Background">
+			<Setter.Value>
+				<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+					<GradientStop Color="#FF585888" Offset="0.9" />
+					<GradientStop Color="#FF686898" Offset="0.75" />
+					<GradientStop Color="#FF7878A8" Offset="0.0" />
+				</LinearGradientBrush>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Border x:Name="border" CornerRadius="5" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" SnapsToDevicePixels="True">
+						<TextBlock Text="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+					</Border>
+					<ControlTemplate.Triggers>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

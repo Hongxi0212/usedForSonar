@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoScanFQCTest", "AutoScanFQCTest.csproj", "{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Debug|x64.ActiveCfg = Debug|x64
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Debug|x64.Build.0 = Debug|x64
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Release|x64.ActiveCfg = Release|x64
+		{C9C7818C-C594-4EBC-90CF-BF5A1A526F1E}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CEB3461A-3B83-4A4D-912D-E6B43AC192BA}
+	EndGlobalSection
+EndGlobal
